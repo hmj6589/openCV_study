@@ -11,7 +11,7 @@ if img is None:
     sys.exit('파일을 찾을 수 없습니다.')
 
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)    # 그레이 이미지로 변환
-faces = detector(gray)		# 얼굴 검출기로 얼굴 영역 검출
+faces = detector(gray)		# 얼굴 검출기(detector)로 얼굴 영역 검출
 
 for rect in faces:
     x,y = rect.left(), rect.top()	 # 얼굴 영역(rect)을 좌표로 변환
@@ -23,14 +23,16 @@ for rect in faces:
     #    part = shape.part(i)
     #    cv2.circle(img, (part.x, part.y), 2, (0, 0, 255), -1)
     #    cv2.putText(img, str(i), (part.x, part.y), cv2.FONT_HERSHEY_PLAIN, 0.5,(255,255,255), 1, cv2.LINE_AA)
-    points = []
+
+    points = []     # 배열에 랜드마크 포인트 저장
     for i in range(68):
         part = shape.part(i)	  # 부위별 좌표 추출
         points.append((part.x, part.y))
 
+    # 포인트들을 둘러싸고 있는 직사각형
     bx, by, bw, bh = cv2.boundingRect(np.float32(points))
     subdiv = cv2.Subdiv2D((bx, by, bx + bw, by + bh))  # 들로네 삼각 분할 객체 생성
-    subdiv.insert(points) 				# 랜드마크 좌표 추가
+    subdiv.insert(points) 		# points에 랜드마크 좌표 추가
     triangleList = subdiv.getTriangleList() 	# 들로네 삼각형 좌표 계산
 
     # 들로네 삼각형 그리기
@@ -39,6 +41,7 @@ for rect in faces:
         pts = t.reshape(-1, 2).astype(np.int32)
         # 좌표 중에 이미지 영역을 벗어나는 것을 제외(음수 등)
         if (pts < 0).sum() or (pts[:, 0] > w).sum() or (pts[:, 1] > h).sum():
+            # if문이 true가 되는 경우 : 하나라도 0이 아닌 경우
             print(pts)
             continue
         cv2.polylines(img, [pts], True, (255, 255, 255), 1, cv2.LINE_AA)

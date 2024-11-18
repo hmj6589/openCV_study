@@ -19,12 +19,13 @@ while True:
     faces = detector(gray)		# 얼굴 검출기로 얼굴 영역 검출
 
     for rect in faces:
+        #이번에는 얼굴에서 사각형으로 표시하는 것 제외함
         #x,y = rect.left(), rect.top()	 # 얼굴 영역(rect)을 좌표로 변환
         #w,h = rect.right()-x, rect.bottom()-y
         #cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 1) # 얼굴 영역 좌표로 사각형 표시
 
         shape = predictor(gray, rect)	# 랜드마크 검출기로 얼굴 랜드마크 검출
-        for i in range(48,68):   	# 각 랜드마크 좌표 추출 및 표시
+        for i in range(27,35):   	# 각 랜드마크 좌표 추출 및 표시 - (27,35)를 할 경우에는 코 부분만 검출됨 6p 참고
             part = shape.part(i)
             cv2.circle(frame, (part.x, part.y), 2, (255, 0, 255), -1)
 
