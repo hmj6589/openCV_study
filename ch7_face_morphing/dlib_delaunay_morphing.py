@@ -3,7 +3,7 @@ import sys
 import dlib
 import numpy as np
 
-detector = dlib.get_frontal_face_detector()	# 얼굴 검출기
+detector = dlib.get_frontal_face_detector()   # 얼굴 검출기
 predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat') # 랜드마크 검출기
 
 # Check if a point is inside a rectangle
@@ -50,7 +50,6 @@ def face_delaunay(theImage1, theImage2):
                 corresp[i][1] += y
 
             # Add back the background
-            # 이미지 끝 점, 가운데 점을 포함 - 8개의 점
             currList.append((1,1))
             currList.append((size[1]-1,1))
             currList.append(((size[1]-1)//2,1))
@@ -91,7 +90,7 @@ def face_delaunay(theImage1, theImage2):
     # Make a delaunay triangulation list.
     list4 = []
 
-    triangleList = subdiv.getTriangleList() # 삼각분할
+    triangleList = subdiv.getTriangleList()
     r = (0, 0, f_w, f_h)
 
     for t in triangleList:
@@ -149,7 +148,6 @@ def morph_triangle(img1, img2, img, t1, t2, t, alpha) :
     # Copy triangular region of the rectangular patch to the output image
     img[r[1]:r[1]+r[3], r[0]:r[0]+r[2]] = img[r[1]:r[1]+r[3], r[0]:r[0]+r[2]] * ( 1 - mask ) + imgRect * mask
 
-# 2개의 이미지 가져오기
 img1 = cv2.imread('morph_images/kimsuhyun.png')
 img2 = cv2.imread('morph_images/kimjiwon.png')
 cv2.imshow('morphing face1',img1)
@@ -157,7 +155,7 @@ cv2.imshow('morphing face2',img2)
 
 [size, img1, img2, points1, points2, tri_list] = face_delaunay(img1, img2)
 
-num_images = 12 # 양 끝을 제외하고 10번 반복하겠다
+num_images = 12
 for j in range(0, num_images):
 
     # Convert Mat to float data type
@@ -170,11 +168,10 @@ for j in range(0, num_images):
 
     # Compute weighted average point coordinates
     for i in range(0, len(points1)):
-        x = (1 - alpha) * points1[i][0] + alpha * points2[i][0] # 각각의 포인트(face1, face2)에 비율 구해서
+        x = (1 - alpha) * points1[i][0] + alpha * points2[i][0]
         y = (1 - alpha) * points1[i][1] + alpha * points2[i][1]
         points.append((x,y))
 
-    # 3개의 점(대칭쌍) -> 와프 변환 가능
     morphed_frame = np.zeros(img1.shape, dtype=img1.dtype)    # 출력 이미지를 위한 변수, 공간 선언
     for i in range(len(tri_list)):
         x = int(tri_list[i][0])
@@ -191,7 +188,7 @@ for j in range(0, num_images):
         cv2.polylines(morphed_frame, [pts], True, (255, 255, 255), 1, cv2.LINE_AA)
 
     cv2.imshow('morphed face', np.uint8(morphed_frame) )
-    cv2.waitKey(100)
+    cv2.waitKey()
 
 cv2.waitKey()
 cv2.destroyAllWindows()

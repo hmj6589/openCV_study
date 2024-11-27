@@ -202,7 +202,7 @@ for j in range(0, num_images):
         # Morph one triangle at a time.
         morph_triangle(img1, img2, morphed_frame, t1, t2, t, alpha)
         pts = np.array([[int(t[0][0]), int(t[0][1])], [int(t[1][0]), int(t[1][1])], [int(t[2][0]), int(t[2][1])]], dtype=np.int32)
-        # cv2.polylines(morphed_frame, [pts], True, (255, 255, 255), 1, cv2.LINE_AA)
+        cv2.polylines(morphed_frame, [pts], True, (255, 255, 255), 1, cv2.LINE_AA)
 
     cv2.imshow('morphed face', np.uint8(morphed_frame) )
     key = cv2.waitKey(2000)
