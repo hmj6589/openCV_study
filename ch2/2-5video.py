@@ -8,6 +8,9 @@ cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)    # 웹캠 비디오
 if not cap.isOpened():
     sys.exit('동영상 연결 실패')
 
+fps = cap.get(cv2.CAP_PROP_FPS)     # 1초동안 보여지는 프레임의 개수
+delay = int(1000/fps)    # 1개의 프레임이 지속하는 시간
+
 while True:
     ret, frame = cap.read()  # 비디오를 구성하는 프레임 획득
 
@@ -17,7 +20,8 @@ while True:
 
     cv2.imshow('Video display', frame)
 
-    key = cv2.waitKey(1)  # 1밀리초 동안 키보드 입력 기다림(정수)
+    key = cv2.waitKey(delay)  # 1밀리초 동안 키보드 입력 기다림(정수)
+    # key = cv2.waitKey(delay) 로하면 실제 동영상의 속도와 똑같이 나옴
     if key == ord('q'):  # 'q' 키가 들어오면 루프를 빠져나감, ord()는 문자를 아스키 값으로 변환하는 함수
         cv2.imwrite('captured.png', frame)  # 이미지 캡처 및 저장
         break
